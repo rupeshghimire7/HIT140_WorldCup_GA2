@@ -1,0 +1,11 @@
+,LR 2.1 (goal difference),LR 2.2 (team goals)
+rows,104,208
+explanatory variables,8,8
+final model,baseline OLS,optimised OLS
+in-sample R² (OLS),0.468,0.281
+adjusted R² (OLS),0.423,0.252
+final model CV R²,0.292,0.207
+final model CV RMSE,1.617,1.215
+mean-baseline RMSE,2.019,1.387
+best competing model,Support vector regression,Support vector regression
+best competing RMSE,1.57,1.219

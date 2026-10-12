@@ -1,0 +1,83 @@
+CODE EXPLANATION - Divya Malla (S406481)
+Notebook: WC2026_Linear_Regression.ipynb
+==========================================================
+
+WHAT THE NOTEBOOK DOES
+Builds and evaluates the two linear regression models for Objective 2:
+  - LR 2.1: predicts the goal difference of each match (104 rows, 8 variables)
+  - LR 2.2: predicts the goals scored by a team in a match (208 rows, 8 variables)
+Every explanatory variable uses only information available BEFORE kick-off.
+
+
+SECTION BY SECTION
+
+1. Set-up
+   Imports the libraries and fixes the random seed (42) so results can be reproduced.
+
+2. Data loading and checks
+   - Source 1: FBref "2026 World Cup Scores & Fixtures" page (saved in data_raw/).
+     Cleaned: removed repeated header rows, removed flag codes from team names,
+     fixed 9 team names (e.g. Korea Republic -> South Korea), read penalty scores.
+   - Source 2: results.csv, about 49,900 international matches since 1872.
+     Used to build each team's history before every World Cup match.
+   - Checks: 104 matches, 48 teams, 72 group + 32 knockout matches, no duplicates.
+     FBref and results.csv agree on all 104 scores.
+   - Target = FBref score (includes extra-time goals; penalty shoot-outs count as a draw).
+
+3. Pre-match variables (feature engineering)
+   - Elo rating: every team starts at 1500; points move up or down after each match
+     depending on the result, the opponent's strength and the importance of the match.
+   - Also: form (points per game, last 10 matches), goals scored and conceded per game
+     (last 2 years), World Cup experience, rest days, host nation, confederation,
+     goals scored/conceded earlier in this World Cup.
+   - Leakage test: variables are recalculated with the match and all later matches
+     deleted; the values are identical, so nothing uses the result of the match itself.
+   - Story chart: when the Elo gap is under 100 points the favourite wins only 44%;
+     with a gap over 300 points the favourite never lost (20 matches).
+
+4. LR 2.1 - goal difference
+   - 12 candidate variables (team 1 minus team 2), each with an expected sign written first.
+   - EDA: Pearson r, scatter plots, correlation heatmap.
+   - Selection: rank by |r|, skip any variable that makes VIF >= 5, stop at 8.
+     Selected: elo_win_exp, experience_diff, form_diff, defence_diff, attack_diff,
+     conf_diff, wc_gd_sofar_diff, momentum_diff.
+   - OLS results: R2 = 0.468 (adjusted 0.423). Only Elo win expectancy is significant:
+     +10 percentage points of win expectancy = about +0.39 goals.
+   - Unseen data (repeated 5-fold CV, 50 test sets): R2 = 0.29, RMSE = 1.62 goals
+     vs 2.02 for always guessing the average (20% smaller error).
+   - Optimisation steps (outliers, non-linearity check, multicollinearity check,
+     Yeo-Johnson, z-standardisation): none improved the model, so baseline OLS is final.
+   - Competing models (tuned with grid search): SVR, k-NN, Ridge, Lasso, random forest,
+     gradient boosting. None was significantly better than linear regression (p > 0.45).
+   - Recommendation: OLS linear regression (same accuracy, easy to interpret).
+
+5. LR 2.2 - team goals
+   - 14 candidate variables (team and opponent values), including an interaction:
+     team attack x opponent's goals conceded.
+   - Selected: attack_vs_defence, opp_elo, team_experience, team_elo, team_attack,
+     team_form, opp_form, opp_wc_conceded_sofar. Shares 0 variables with LR 2.1.
+   - OLS results: R2 = 0.281. Significant: opponent Elo (100 points stronger = about
+     -0.28 goals) and team attack (+1 goal/game record = about +0.46 goals).
+   - Train/test splits keep both rows of a match together.
+   - Optimisation: outlier removal + Yeo-Johnson raised CV R2 from 0.177 to 0.207.
+     The RESET test found mild curvature (normal for goal counts); Poisson regression
+     was tested and was not better.
+   - The optimised OLS had the lowest error of all 10 models (RMSE 1.215 vs 1.387 baseline).
+   - Recommendation: optimised OLS linear regression.
+
+6. Assumption checks
+   LR 2.1: residuals normal, equal spread - assumptions met.
+   LR 2.2: residuals not normal, spread uneven - expected for goal counts; noted as a limitation.
+
+7-8. Summary table, summary chart and conclusion.
+
+
+OUTPUT FILES (outputs/)
+  lr21_dataset.csv  - final 104-row dataset for LR 2.1
+  lr22_dataset.csv  - final 208-row dataset for LR 2.2
+  summary.csv       - key results of both models
+  fig00-fig16 .png  - all charts (can be used in the report)
+
+HOW TO RUN
+  pip install pandas numpy matplotlib seaborn scipy statsmodels scikit-learn lxml
+  Open the notebook and click Run All (about 2-3 minutes).
