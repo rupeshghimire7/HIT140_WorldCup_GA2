@@ -1,0 +1,25 @@
+model,variable,family,type,expected sign,r with target,sign as expected,VIF (final set),chosen
+2.1,elo_diff,Elo rating,shared,+,0.635,yes,4.8,YES
+2.1,mv_diff,Squad market value,shared,+,0.692,yes,3.7,YES
+2.1,wcexp_diff,World Cup experience,shared,+,0.549,yes,3.4,YES
+2.1,histgd_diff,Historical WC goal difference,shared,+,0.336,yes,2.3,YES
+2.1,host_diff,Host nation,unique,+,0.253,yes,,no
+2.1,rest_days_diff,Rest days,unique,+,0.085,yes,,no
+2.1,hist_poss_diff,Possession (2018/22),unique,+,0.323,yes,3.2,YES
+2.1,hist_cards_diff,Cards (2018/22),unique,-,-0.116,yes,,no
+2.1,hist_corners_diff,Corners (2018/22),unique,+,0.231,yes,3.5,YES
+2.1,hist_fouls_diff,Fouls (2018/22),unique,-,-0.142,yes,1.5,YES
+2.1,strong_confed_diff,Confederation strength,unique,+,0.277,yes,2.2,YES
+2.2,elo_diff,Elo rating,shared,+,0.51,yes,4.0,YES
+2.2,mv_diff,Squad market value,shared,+,0.546,yes,3.8,YES
+2.2,wcexp_diff,World Cup experience,shared,+,0.457,yes,3.0,YES
+2.2,histgd_diff,Historical WC goal difference,shared,+,0.293,yes,2.1,YES
+2.2,host_diff,Host nation,unique,+,0.223,yes,,no
+2.2,team_form_gf,2026 goals scored form,unique,+,0.048,yes,,no
+2.2,opp_form_ga,2026 goals conceded form,unique,+,0.206,yes,1.7,YES
+2.2,opp_form_cs,2026 clean-sheet form,unique,-,-0.227,yes,1.5,YES
+2.2,team_hist_shots,Shots (2018/22),unique,+,0.25,yes,1.5,YES
+2.2,opp_hist_sot_conc,Shots on target conceded (2018/22),unique,+,0.13,yes,1.3,YES
+2.2,opp_hist_cs,Clean sheets (2018/22),unique,-,-0.06,yes,,no
+2.2,kickoff_hour,Kick-off hour,unique,none,-0.049,n/a,,no
+2.2,knockout,Knockout stage,unique,-,-0.042,yes,,no
